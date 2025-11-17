@@ -53,12 +53,9 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text('${worldTime!.location} ${worldTime!.flag}'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.public),
-            onPressed: _chooseAnother,
-          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () => Navigator.pushNamed(context, '/about'),

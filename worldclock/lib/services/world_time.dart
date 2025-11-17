@@ -8,37 +8,54 @@ class WorldTime {
 
   DateTime? _serverUtc;
   DateTime? _fetchTimeUtc;
-  int _offsetSec = 0;
+  //int _offsetSec = 0;
   bool isDaytime = true;
 
-  WorldTime({required this.location, required this.flag, required this.url});
+  WorldTime({
+    required this.location,
+    required this.flag,
+    required this.url,
+  });
+  static const String _apiKey = "723d2c2713dc424ea5d72808926bbc7f";
 
   Future<void> getTime() async {
     try {
-      final response =
-          await http.get(Uri.parse('https://worldtimeapi.org/api/timezone/$url'));
-      if (response.statusCode != 200) throw Exception('status ${response.statusCode}');
+      final uri = Uri.parse(
+        "https://api.ipgeolocation.io/timezone?apiKey=$_apiKey&tz=$url",
+      );
+
+      final response = await http.get(uri).timeout(const Duration(seconds: 6));
+
+      if (response.statusCode != 200) {
+        throw Exception("Status ${response.statusCode}");
+      }
+
       final data = jsonDecode(response.body);
 
-      final datetimeStr = data['datetime'] as String;
-      final offsetStr = data['utc_offset'] as String;
+      final dt = DateTime.parse(data["date_time"]);
 
-      final parsed = DateTime.parse(datetimeStr);
-      _serverUtc = parsed.toUtc();
+      /*// Offset not necessary bleeh
+      final rawOffset = data["timezone_offset_with_dst"];
+      final offsetHours = rawOffset is num
+          ? rawOffset.toDouble()
+          : double.tryParse(rawOffset?.toString() ?? "0") ?? 0.0;
+      _offsetSec = (offsetHours * 3600).round();*/
+
+      // Save server time in UTC
+      _serverUtc = dt;
       _fetchTimeUtc = DateTime.now().toUtc();
 
-      final sign = offsetStr.startsWith('-') ? -1 : 1;
-      final parts = offsetStr.substring(1).split(':');
-      _offsetSec = sign * (int.parse(parts[0]) * 3600 + int.parse(parts[1]) * 60);
+      // Day / Night
+      isDaytime = dt.hour >= 6 && dt.hour < 19;
 
-      final local = getCurrentLocalTime();
-      isDaytime = local.hour >= 6 && local.hour < 19;
     } catch (e) {
-      _serverUtc = DateTime.now().toUtc();
-      _fetchTimeUtc = _serverUtc;
-      _offsetSec = 0;
+      print("Fetch failed for $location: $e");
+      
+      final now = DateTime.now().toUtc();
+      _serverUtc = now;
+      _fetchTimeUtc = now;
+      //_offsetSec = 0;
       isDaytime = true;
-      print('Fetch failed for $location: $e');
     }
   }
 
@@ -46,10 +63,14 @@ class WorldTime {
     final nowUtc = DateTime.now().toUtc();
     final baseUtc = _serverUtc ?? nowUtc;
     final fetchedUtc = _fetchTimeUtc ?? nowUtc;
+
     final elapsed = nowUtc.difference(fetchedUtc);
-    return baseUtc.add(elapsed).add(Duration(seconds: _offsetSec));
+    return baseUtc.add(elapsed);
   }
 
-  static String formatTime(DateTime dt) =>
-      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+  static String formatTime(DateTime dt) {
+    return "${dt.hour.toString().padLeft(2, '0')}:"
+           "${dt.minute.toString().padLeft(2, '0')}:"
+           "${dt.second.toString().padLeft(2, '0')}";
+  }
 }

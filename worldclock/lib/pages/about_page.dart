@@ -16,7 +16,7 @@ class AboutPage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Text(
-            "WorldTime - simple world clock.\n\nFeatures:\n• Async fetch from worldtimeapi.org\n• Per-second ticking derived from server time\n• Smooth day/night gradient\n• Choose from 20 locations",
+            "WorldTime - simple world clock.\n\nFeatures:\n• Async fetch from worldtimeapi.org\n• Per-second ticking derived from server time\n• Smooth day/night gradient\n• Choose from over 20 locations",
             style: TextStyle(color: Colors.white70, fontSize: 16),
             textAlign: TextAlign.center,
           ),

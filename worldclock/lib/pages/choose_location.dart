@@ -105,8 +105,6 @@ class _ChooseLocationState extends State<ChooseLocation> {
     try {
       await instance.getTime();
       if (!mounted) return;
-
-      // Always replace the current page (no old argument reuse)
       Navigator.pushReplacementNamed(
         context,
         '/home',
