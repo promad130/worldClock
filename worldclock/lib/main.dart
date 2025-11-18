@@ -16,9 +16,9 @@ class WorldTimeApp extends StatelessWidget {
       title: 'WorldTime',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.indigo),
-      initialRoute: '/',
+      initialRoute: '/home',
       routes: {
-        '/': (context) => const LoadingScreen(),
+        //'/': (context) => const LoadingScreen(),
         '/home': (context) => const HomePage(),
         '/location': (context) => const ChooseLocation(),
         '/about': (context) => const AboutPage(),
@@ -27,7 +27,7 @@ class WorldTimeApp extends StatelessWidget {
   }
 }
 
-/// Simple loading/start screen
+/*/// Simple loading/start screen
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({super.key});
 
@@ -46,4 +46,4 @@ class LoadingScreen extends StatelessWidget {
       ),
     );
   }
-}
+}*/

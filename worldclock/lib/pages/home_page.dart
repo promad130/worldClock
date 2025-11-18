@@ -12,6 +12,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   WorldTime? worldTime;
   Timer? _timer;
+  bool _loadedDefault = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDefaultIfNeeded();
+  }
+
+  Future<void> _loadDefaultIfNeeded() async {
+    if (_loadedDefault) return;
+    _loadedDefault = true;
+
+    worldTime = WorldTime(
+      location: 'India',
+      flag: '🇮🇳',
+      url: 'Asia/Kolkata',
+    );
+
+    await worldTime!.getTime();
+    if (!mounted) return;
+
+    _startTimer();
+    setState(() {});
+  }
 
   @override
   void didChangeDependencies() {
@@ -48,53 +72,95 @@ class _HomePageState extends State<HomePage> {
 
     final local = worldTime!.getCurrentLocalTime();
     final formattedTime = WorldTime.formatTime(local);
-    final date = '${local.year}-${local.month}-${local.day}';
+    final date = "${local.year}-${local.month}-${local.day}";
     final isDay = local.hour >= 6 && local.hour < 19;
+    final h = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('${worldTime!.location} ${worldTime!.flag}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            onPressed: () => Navigator.pushNamed(context, '/about'),
-          ),
-        ],
+    final gradientColors = isDay
+        ? [Colors.lightBlueAccent, Colors.blue]
+        : [Colors.indigo[900]!, Colors.black];
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
       ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 500),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: isDay
-                ? [Colors.lightBlueAccent, Colors.blue]
-                : [Colors.indigo[900]!, Colors.black],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            '${worldTime!.location} ${worldTime!.flag}',
+            style: const TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  formattedTime,
-                  style: const TextStyle(color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold),
+
+        body: SafeArea(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox.expand(
+                child: Padding(
+                  padding: EdgeInsets.only(top: h * 0.22),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        formattedTime,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 72,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        date,
+                        style: const TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        isDay ? '☀️ Daytime' : '🌙 Nighttime',
+                        style: const TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-                Text(date, style: const TextStyle(color: Colors.white70, fontSize: 16)),
-                const SizedBox(height: 20),
-                Text(isDay ? '☀️ Daytime' : '🌙 Nighttime',
-                    style: const TextStyle(color: Colors.white, fontSize: 18)),
-                const SizedBox(height: 40),
-                ElevatedButton.icon(
+              ),
+
+              Positioned(
+                bottom: 40,
+                child: ElevatedButton.icon(
                   onPressed: _chooseAnother,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(alpha: 0.25),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 14),
+                  ),
                   icon: const Icon(Icons.location_on),
-                  label: const Text('Change Location'),
+                  label: const Text(
+                    "Change Location",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

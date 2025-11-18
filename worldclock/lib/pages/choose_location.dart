@@ -119,7 +119,7 @@ class _ChooseLocationState extends State<ChooseLocation> {
   Future<void> _selectLocation(int index) async {
     setState(() => loadingIndex = index);
 
-    final loc = _locations[index];
+    final loc = _filteredList[index];
     final instance = WorldTime(
       location: loc['loc']!,
       flag: loc['flag']!,
@@ -160,18 +160,31 @@ class _ChooseLocationState extends State<ChooseLocation> {
           child: SafeArea(
             child: Column(
               children: [
-                const SizedBox(height: 10),
-                const Text(
-                  'Select a Country',
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 48),
+                      const Text(
+                        'Select a Country',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.info_outline, color: Colors.white),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/about');
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-
-                //Search Bar
+      
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
