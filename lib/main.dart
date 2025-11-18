@@ -18,7 +18,6 @@ class WorldTimeApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true, primarySwatch: Colors.indigo),
       initialRoute: '/home',
       routes: {
-        //'/': (context) => const LoadingScreen(),
         '/home': (context) => const HomePage(),
         '/location': (context) => const ChooseLocation(),
         '/about': (context) => const AboutPage(),
@@ -26,24 +25,3 @@ class WorldTimeApp extends StatelessWidget {
     );
   }
 }
-
-/*/// Simple loading/start screen
-class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigo[900],
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: const Icon(Icons.public),
-          label: const Text('Choose a Location'),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/location');
-          },
-        ),
-      ),
-    );
-  }
-}*/

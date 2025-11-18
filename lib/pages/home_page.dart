@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
     final h = MediaQuery.of(context).size.height;
 
     final gradientColors = isDay
-        ? [Colors.lightBlueAccent, Colors.blue]
+        ? [Color(0xFF3A7BD5), Color(0xFF00D2FF)]
         : [Colors.indigo[900]!, Colors.black];
 
     return Container(
@@ -100,6 +100,13 @@ class _HomePageState extends State<HomePage> {
               fontSize: 30,
               color: Colors.white,
               fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black54,
+                  offset: Offset(0, 1),
+                ),
+              ],
             ),
           ),
         ),
@@ -117,10 +124,16 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                         formattedTime,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 72,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 12,
+                              color: Colors.black.withValues(alpha: 0.5),
+                            )
+                          ],
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -145,10 +158,14 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white.withValues(alpha: 0.25),
                     foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 14),
+                    side: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.4),
+                      width: 1.2,
+                    ),
                   ),
                   icon: const Icon(Icons.location_on),
                   label: const Text(

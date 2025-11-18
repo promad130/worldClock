@@ -225,6 +225,13 @@ class _ChooseLocationState extends State<ChooseLocation> {
                 return Card(
                   color: Colors.grey[850],
                   margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: Colors.white.withValues(alpha: 0.05),
+                    ),
+                  ),
                   child: ListTile(
                     onTap: isLoading ? null : () => _selectLocation(index),
                     leading: Text(loc['flag']!, style: const TextStyle(fontSize: 28)),
